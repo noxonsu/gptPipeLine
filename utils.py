@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
+from playwright.sync_api import sync_playwright
 
 
 def read_markdown_file(file):
@@ -158,38 +159,38 @@ def correct_url(url):
 
 
 def extract_content(site):
-    loader = AsyncChromiumLoader([site])
-    docs = loader.load()
-    
-    # Проверка на наличие документов
-    if not docs:
-        return {
-            "error": f"Failed to load the site {site}",
-            "text_content": None,
-            "html_content": None
-        }
+    with sync_playwright() as p:
+        # Launch the browser in headless mode
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        
+        try:
+            # Navigate to the site
+            page.goto(site, wait_until="domcontentloaded")
+            # Wait for the content to load, you can adjust the waiting conditions as needed
+            page.wait_for_timeout(5000)  # Adjust the timeout as necessary
 
-    # Извлечение HTML содержимого
-    
+            # Get the page content
+            html_content = page.content()
+            browser.close()
 
-    html_content = docs[0].page_content
+            # Optionally parse the HTML content with BeautifulSoup for further processing
+            soup = BeautifulSoup(html_content, 'html.parser')
+            text_content = soup.get_text(separator='\n', strip=True)
 
-    # Преобразование HTML в текст
-    html2text = Html2TextTransformer({'ignore_links': False})
-    text_content = html2text.transform_documents(docs)
+            return {
+                "error": None,
+                "text_content": text_content,
+                "html_content": html_content
+            }
 
-    if not text_content:
-        return {
-            "error": f"Failed to extract content for site {site}",
-            "text_content": None,
-            "html_content": html_content
-        }
-
-    return {
-        "error": None,
-        "text_content": text_content[0].page_content,
-        "html_content": html_content
-    }
+        except Exception as e:
+            browser.close()
+            return {
+                "error": f"Failed to load or extract content for site {site}: {str(e)}",
+                "text_content": None,
+                "html_content": None
+            }
 
 def search_companies_on_google(industry_query,limt):
     SERPAPI_KEY = os.environ.get('SERPAPI_KEY')
