@@ -16,7 +16,7 @@ on:
         required: true
         default: 'prices' # You can change the default value        
       TG_BOT_TOKEN:
-        description: 'ex: '
+        description: 'TG_BOT_TOKEN: '
         required: true
         default: '' # You can change the default value  
       MY_OPENAI_KEY:
@@ -38,15 +38,6 @@ jobs:
       with:
         python-version: '3.11.6'
 
-    - name: Check if secrets OPENAI_API_KEY_DEFAULT is set
-      run: |
-        if [ -z "${{ secrets.OPENAI_API_KEY_DEFAULT }}" ]; then
-          echo "OPENAI_API_KEY_DEFAULT is not set!"
-          exit 1
-        else
-          echo "OPENAI_API_KEY_DEFAULT is set!"
-        fi  # Add this 'fi' to close the if statement
-
     - name: Install XVFB and other libs
       run: |
         sudo apt-get update
@@ -65,7 +56,6 @@ jobs:
         git config pull.rebase false
     - name: Run python scripts
       env:
-        OPENAI_API_KEY_DEFAULT: ${{ secrets.OPENAI_API_KEY_DEFAULT }}
         MY_PRODUCT: ${{ github.event.inputs.MY_PRODUCT }}
         MY_TARGET_AUDIENCE: ${{ github.event.inputs.MY_TARGET_AUDIENCE }}
         TG_CHAT_ID: ${{ github.event.inputs.TG_CHAT_ID }}
