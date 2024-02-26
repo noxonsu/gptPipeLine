@@ -390,19 +390,19 @@ Can you share any specific hooks or angles that have been particularly effective
 # Main process
 updated_text = process_text_with_urls(MY_PRODUCT)
 
-send_message_to_telegram_chat(f"📝 Crawl completed for {MY_PRODUCT}. Создаем портрет клиента..")
+#send_message_to_telegram_chat(f"📝 Crawl completed for {MY_PRODUCT}. Создаем портрет клиента..")
 
 portrait = create_portrait_of_user("Business:" + updated_text + "\nAudience: " + MY_TARGET_AUDIENCE)
 
 send_message_to_telegram_chat(portrait)
 
-send_message_to_telegram_chat(f"📝 Creating SMM texts for {MY_PRODUCT}..")
-smm = create_smm_texts("Business:" + updated_text + "\nAudience: " + portrait)
+#send_message_to_telegram_chat(f"📝 Creating SMM texts for {MY_PRODUCT}..")
+#smm = create_smm_texts("Business:" + updated_text + "\nAudience: " + portrait)
 
-send_message_to_telegram_chat(f"📝 "+smm     )
+#send_message_to_telegram_chat(f"📝 "+smm     )
 
 folder_name = foldername_generate(MY_PRODUCT)
 save_text_to_markdown(updated_text, folder_name)
-send_message_to_telegram_chat(f"📝 Text saved to {folder_name}/input.md")
+#send_message_to_telegram_chat(f"📝 Text saved to {folder_name}/input.md")
 
 
