@@ -64,7 +64,7 @@ jobs:
         SMART_GPTV: "gpt-3.5-turbo-0125"
         MY_OPENAI_KEY: ${{ github.event.inputs.MY_OPENAI_KEY }}
       run: |
-        python 1loadSerp.py
+        python 1crawlSite.py
         git add -A
         git diff --cached --exit-code || git commit -m "($GITHUB_WORKFLOW) - 1loadSerp.py"
         git pull
